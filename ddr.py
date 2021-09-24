@@ -1,5 +1,7 @@
 #! python3
+import ddrescuelib
 __version__ = '0.0'
 
 if __name__ == '__main__':
-    print('Hello world')
+    ddrescue = ddrescuelib.ddrescue_class()
+    print(ddrescue.get_version())
