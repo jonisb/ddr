@@ -40,7 +40,7 @@ if __name__ == '__main__':
         for path, size in fileslist:
             progress.log(f"Starting job #{path}")
             #sleep(0.2)
-            progress.reset(jobs_task, total=size, description=f"job [bold yellow]#{str(path)[-20:]}")
+            progress.reset(jobs_task, total=size, description=f"job [bold yellow]#{str(path)[-40:]}")
             progress.start_task(jobs_task)
             Path3 = (Path2 / path.relative_to(Path1))
             for data in ddrescue.output(path, Path3):
