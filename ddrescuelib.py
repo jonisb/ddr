@@ -28,7 +28,8 @@ class ddrescue_class:
                     return self.version
 
     def output(self, inpath, outpath):
-        settings = ['--max-read-rate=102400', '--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1']
+        #settings = ['--max-read-rate=102400', '--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1']
+        settings = ['--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1']
         command = [
             self.bin,
             *settings,
