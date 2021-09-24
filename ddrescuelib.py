@@ -57,7 +57,7 @@ class ddrescue_class:
                             self.values['status'] = line
                         elif line == "Finished":
                             self.values['status'] = line
-                        elif line == "GNU ddrescue 1.25":
+                        elif line[:12] == "GNU ddrescue":
                             pass
                         elif line == "Press Ctrl-C to interrupt":
                             pass
