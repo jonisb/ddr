@@ -1,10 +1,34 @@
 #!/usr/bin/env python3
 import sys
 from time import sleep
+from datetime import timedelta
 from pathlib import Path
-from rich.progress import Progress, BarColumn, TimeElapsedColumn, TimeRemainingColumn,FileSizeColumn, TotalFileSizeColumn, TransferSpeedColumn
+from rich.progress import Progress, BarColumn, TimeElapsedColumn, FileSizeColumn, TotalFileSizeColumn, TransferSpeedColumn, ProgressColumn, Text
 import ddrescuelib
 __version__ = '0.0'
+
+
+class TimeRemainingColumn(ProgressColumn):
+    """Renders estimated time remaining."""
+
+    # Only refresh twice a second to prevent jitter
+    max_refresh = 0.5
+
+    def render(self, task: "Task") -> Text:
+        """Show time remaining."""
+        #remaining = task.time_remaining
+        elapsed = task.elapsed
+        #if remaining is None:
+        if elapsed is None:
+            return Text("-:--:--", style="progress.remaining")
+        percentage = task.percentage
+        #remaining_delta = timedelta(seconds=int(remaining))
+        try:
+            remaining_delta = timedelta(seconds=int((100.0/percentage)*int(elapsed))-int(elapsed))
+        except ZeroDivisionError:
+            return Text("-:--:--", style="progress.remaining")
+        return Text(str(remaining_delta), style="progress.remaining")
+
 
 if __name__ == '__main__':
     kB = 1024
