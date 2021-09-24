@@ -1,4 +1,4 @@
-#! python3
+#!/usr/bin/env python3
 import ddrescuelib
 __version__ = '0.0'
 
