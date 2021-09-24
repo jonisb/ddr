@@ -57,6 +57,10 @@ class ddrescue_class:
                             self.values['status'] = line
                         elif line == "Finished":
                             self.values['status'] = line
+                        elif line == "Current status":
+                            pass
+                        elif line == "Initial status (read from mapfile)":
+                            pass
                         elif line[:12] == "GNU ddrescue":
                             pass
                         elif line == "Press Ctrl-C to interrupt":
