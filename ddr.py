@@ -8,7 +8,7 @@ import ddrescuelib
 __version__ = '0.0'
 
 
-class TimeRemainingColumn(ProgressColumn):
+class TimeRemainingColumn2(ProgressColumn):
     """Renders estimated time remaining."""
 
     # Only refresh twice a second to prevent jitter
@@ -51,6 +51,7 @@ if __name__ == '__main__':
         "[progress.percentage]{task.percentage:>3.0f}%",
         TimeElapsedColumn(),
         TimeRemainingColumn(),
+        TimeRemainingColumn2(),
         FileSizeColumn(),
         TotalFileSizeColumn(),
         TransferSpeedColumn(),
