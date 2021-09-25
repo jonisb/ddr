@@ -3,7 +3,6 @@ import sys
 from time import sleep
 from datetime import timedelta
 from pathlib import Path
-from rich.progress import Progress, BarColumn, TimeElapsedColumn, FileSizeColumn, TotalFileSizeColumn, TransferSpeedColumn, ProgressColumn, Text
 from rich.progress import Progress, BarColumn, TimeElapsedColumn, TimeRemainingColumn, FileSizeColumn, TotalFileSizeColumn, TransferSpeedColumn, ProgressColumn, Text
 import ddrescuelib
 __version__ = '0.0'
