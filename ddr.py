@@ -4,6 +4,9 @@ from time import sleep
 from datetime import timedelta
 from pathlib import Path
 from rich.progress import Progress, BarColumn, TimeElapsedColumn, TimeRemainingColumn, FileSizeColumn, TotalFileSizeColumn, TransferSpeedColumn, ProgressColumn, Text
+from rich.table import Table
+from rich.live import Live
+from rich.panel import Panel
 import ddrescuelib
 __version__ = '0.0'
 
@@ -58,19 +61,45 @@ if __name__ == '__main__':
         auto_refresh=False)
 
     jobs_task = progress.add_task("jobs")
-    master_task = progress.add_task("overall", total=filessize)
+    master_task_size = progress.add_task("overall size", total=filessize)
+
+    progress2 = Progress("[progress.description]{task.description}",
+        BarColumn(),
+        "[progress.percentage]{task.percentage:>3.0f}%",
+        TimeElapsedColumn(),
+        TimeRemainingColumn(),
+        TimeRemainingColumn2(),
+        auto_refresh=False)
+    master_task_files = progress2.add_task("overall files", total=len(fileslist))
+
+    passes = [['--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'], ['--sparse', '--no-trim']]
+    master_task_passes = progress2.add_task("overall passes", total=len(passes))
+
+    progress_table = Table.grid()
+    progress_table.add_row(
+        Panel.fit(
+            progress, title="Jobs", border_style="green", padding=(1, 2)
+        ),
+        Panel.fit(progress2, title="overall", border_style="red", padding=(1, 2)),
+        )
 
     ddrescue = ddrescuelib.ddrescue_class()
-    with progress:
-        for path, size in fileslist:
-            progress.log(f"Starting job #{path}")
-            #sleep(0.2)
-            progress.reset(jobs_task, total=size, description=f"job [bold yellow]#{str(path)[-40:]}")
-            progress.start_task(jobs_task)
-            Path3 = (Path2 / path.relative_to(Path1))
-            for data in ddrescue.output(path, Path3):
-                expand_size = eval(ddrescue.values['rescued'].replace('MB', f'* {kB} ** 2').replace('kB', f'* {kB}').replace('B', ''))
-                progress.update(jobs_task, completed=expand_size, refresh=True)
+    #with progress:
+    with Live(progress_table, refresh_per_second=10):
+        for settings in passes:
+            for i, (path, size) in enumerate(fileslist):
+                progress.log(f"Starting job #{path}")
+                #sleep(0.2)
+                progress.reset(jobs_task, total=size, description=f"job [bold yellow]#{i+1}")
+                progress.start_task(jobs_task)
+                Path3 = (Path2 / path.relative_to(Path1))
+                for data in ddrescue.output(path, Path3, settings):
+                    expand_size = eval(ddrescue.values['rescued'].replace('MB', f'* {kB} ** 2').replace('kB', f'* {kB}').replace('B', ''))
+                    progress.update(jobs_task, completed=expand_size, refresh=True)
 
-            progress.advance(master_task, size)
-            progress.log(f"Job #{path} is complete")
+                progress.advance(master_task_size, size)
+                progress2.advance(master_task_files, 1)
+                progress.log(f"Job #{path} is complete")
+            progress.reset(master_task_size, total=filessize, description="overall size")
+            progress2.reset(master_task_files, total=len(fileslist), description="overall files")
+            progress2.advance(master_task_passes, 1)
