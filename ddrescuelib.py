@@ -57,6 +57,9 @@ class ddrescue_class:
                         result = regex.match(r"(Trimming failed blocks\.\.\.) \(((?:for|back)wards)\)", line)
                         if result:
                             self.values['status'] = result.group()
+                        result = regex.match(r"(Scraping failed blocks\.\.\.) \(((?:for|back)wards)\)", line)
+                        if result:
+                            self.values['status'] = result.group()
                         elif line == "Interrupted by user":
                             self.values['status'] = line
                         elif line == "Finished":
@@ -72,6 +75,8 @@ class ddrescue_class:
                         elif line == "Too many read errors":
                             pass
                         elif line == "Too many slow reads":
+                            pass
+                        elif line == "Read error found before the first good read":
                             pass
                         else:
                             print('not:', repr(line))
