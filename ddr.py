@@ -76,7 +76,13 @@ if __name__ == '__main__':
     ddrescuelog = ddrescuelib.ddrescuelog_class()
     #passes = [['--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'], ['--sparse', '--no-trim']]
     #passes = [('pass1', ddrescue.output, ('--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'), True), ('pass2', ddrescuelog.run_no_output, ('--done-status',), False), ('pass1', ddrescue.output, ('--sparse', '--no-trim'), True)]
-    passes = [('pass1', ddrescue.output, ('--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'), True), ('pass2', ddrescuelog.run_no_output, ('-d',), False), ('pass1', ddrescue.output, ('--sparse', '--no-trim'), True)]
+    passes = [
+        ('pass1', ddrescue.output, ('--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'), True),
+        ('pass2', ddrescuelog.run_no_output, ('-d',), False),
+        ('pass3', ddrescue.output, ('--sparse', '--verify-on-error', '--no-trim'), True)
+        ('pass4', ddrescue.output, ('--sparse', '--verify-on-error', '--no-scrape'), True)
+        ('pass5', ddrescue.output, ('--sparse', '--verify-on-error', '--idirect', '--retry-passes=5'), True)
+        ]
     master_task_passes = progress2.add_task("overall passes", total=len(passes))
 
     progress_table = Table.grid()
