@@ -74,3 +74,38 @@ class ddrescue_class:
                             print('not:', repr(line))
             else:
                 yield self.values['pct rescued']
+
+
+class ddrescuelog_class:
+    bin = Path('ddrescuelog') # r'C:\Users\jonib\scoop\persist\cygwin\root\bin\ddrescuelog.exe'
+
+    def run(self, command):
+        return Popen(command, stdout=PIPE, universal_newlines=True)
+
+    @property
+    def version(self):
+        try:
+            return self._version
+        except AttibuteError:
+            settings = ['--version']
+            command = [
+                self.bin,
+                *settings,
+                ]
+            with self.run(command) as proc:
+                while proc.poll() is None:
+                    line = proc.stdout.readline()
+                    result = regex.match(r"GNU ddrescuelog ([\d\.]+)\n", line)
+                    if result:
+                        self._version = result.groups()[0]
+                        return self._version
+                        #return (self._version := result.groups()[0])
+
+    def run_no_output(self, outpath, settings=()):
+        command = [
+            self.bin,
+            *settings,
+            outpath.with_suffix(outpath.suffix + '.log')
+            ]
+        with self.run(command) as proc:
+            return proc.wait()
