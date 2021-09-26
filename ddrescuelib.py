@@ -66,6 +66,10 @@ class ddrescue_class:
                             pass
                         elif line == "Press Ctrl-C to interrupt":
                             pass
+                        elif line == "Too many read errors":
+                            pass
+                        elif line == "Too many slow reads":
+                            pass
                         else:
                             print('not:', repr(line))
             else:
