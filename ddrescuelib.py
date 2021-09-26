@@ -54,7 +54,10 @@ class ddrescue_class:
                     if result:
                         self.values['status'] = result.group()
                     else:
-                        if line == "Interrupted by user":
+                        result = regex.match(r"(Trimming failed blocks\.\.\.) \(((?:for|back)wards)\)", line)
+                        if result:
+                            self.values['status'] = result.group()
+                        elif line == "Interrupted by user":
                             self.values['status'] = line
                         elif line == "Finished":
                             self.values['status'] = line
