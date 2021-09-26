@@ -72,7 +72,11 @@ if __name__ == '__main__':
         auto_refresh=False)
     master_task_files = progress2.add_task("overall files", total=len(fileslist))
 
-    passes = [['--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'], ['--sparse', '--no-trim']]
+    ddrescue = ddrescuelib.ddrescue_class()
+    ddrescuelog = ddrescuelib.ddrescuelog_class()
+    #passes = [['--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'], ['--sparse', '--no-trim']]
+    #passes = [('pass1', ddrescue.output, ('--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'), True), ('pass2', ddrescuelog.run_no_output, ('--done-status',), False), ('pass1', ddrescue.output, ('--sparse', '--no-trim'), True)]
+    passes = [('pass1', ddrescue.output, ('--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'), True), ('pass2', ddrescuelog.run_no_output, ('-d',), False), ('pass1', ddrescue.output, ('--sparse', '--no-trim'), True)]
     master_task_passes = progress2.add_task("overall passes", total=len(passes))
 
     progress_table = Table.grid()
@@ -83,19 +87,21 @@ if __name__ == '__main__':
         Panel.fit(progress2, title="overall", border_style="red", padding=(1, 2)),
         )
 
-    ddrescue = ddrescuelib.ddrescue_class()
-    #with progress:
     with Live(progress_table, refresh_per_second=10):
-        for settings in passes:
-            for i, (path, size) in enumerate(fileslist):
+        for Pass, func, settings, output in passes:
+            for i, (path, size) in enumerate(fileslist.copy()):
                 progress.log(f"Starting job #{path}")
                 #sleep(0.2)
                 progress.reset(jobs_task, total=size, description=f"job [bold yellow]#{i+1}")
                 progress.start_task(jobs_task)
                 Path3 = (Path2 / path.relative_to(Path1))
-                for data in ddrescue.output(path, Path3, settings):
-                    expand_size = eval(ddrescue.values['rescued'].replace('MB', f'* {kB} ** 2').replace('kB', f'* {kB}').replace('B', ''))
-                    progress.update(jobs_task, completed=expand_size, refresh=True)
+                if output:
+                    for data in func(path, Path3, settings):
+                        expand_size = eval(ddrescue.values['rescued'].replace('MB', f'* {kB} ** 2').replace('kB', f'* {kB}').replace('B', ''))
+                        progress.update(jobs_task, completed=expand_size, refresh=True)
+                else:
+                    if not func(Path3, settings):
+                        fileslist.remove((path, size))
 
                 progress.advance(master_task_size, size)
                 progress2.advance(master_task_files, 1)
