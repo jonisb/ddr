@@ -103,6 +103,7 @@ if __name__ == '__main__':
                 Path3 = (Path2 / path.relative_to(Path1))
                 if output:
                     for data in func(path, Path3, settings):
+                        sleep(0.2)
                         expand_size = eval(ddrescue.values['rescued'].replace('MB', f'* {kB} ** 2').replace('kB', f'* {kB}').replace('B', ''))
                         progress.update(jobs_task, completed=expand_size, refresh=True)
                 else:
