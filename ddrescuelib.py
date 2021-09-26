@@ -50,7 +50,7 @@ class ddrescue_class:
                         if 'time since last successful read' == res[0]:
                             yield self.values['pct rescued']
                 else:
-                    result = regex.match(r"(Copying non-tried blocks\.\.\.) Pass (\d+) \((forwards)\)", line)
+                    result = regex.match(r"(Copying non-tried blocks\.\.\.) Pass (\d+) \(((?:for|back)wards)\)", line)
                     if result:
                         self.values['status'] = result.group()
                     else:
