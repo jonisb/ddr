@@ -57,29 +57,30 @@ class ddrescue_class:
                         result = regex.match(r"(Trimming failed blocks\.\.\.) \(((?:for|back)wards)\)", line)
                         if result:
                             self.values['status'] = result.group()
-                        result = regex.match(r"(Scraping failed blocks\.\.\.) \(((?:for|back)wards)\)", line)
-                        if result:
-                            self.values['status'] = result.group()
-                        elif line == "Interrupted by user":
-                            self.values['status'] = line
-                        elif line == "Finished":
-                            self.values['status'] = line
-                        elif line == "Current status":
-                            pass
-                        elif line == "Initial status (read from mapfile)":
-                            pass
-                        elif line[:12] == "GNU ddrescue":
-                            pass
-                        elif line == "Press Ctrl-C to interrupt":
-                            pass
-                        elif line == "Too many read errors":
-                            pass
-                        elif line == "Too many slow reads":
-                            pass
-                        elif line == "Read error found before the first good read":
-                            pass
                         else:
-                            print('not:', repr(line))
+                            result = regex.match(r"(Scraping failed blocks\.\.\.) \(((?:for|back)wards)\)", line)
+                            if result:
+                                self.values['status'] = result.group()
+                            elif line == "Interrupted by user":
+                                self.values['status'] = line
+                            elif line == "Finished":
+                                self.values['status'] = line
+                            elif line == "Current status":
+                                pass
+                            elif line == "Initial status (read from mapfile)":
+                                pass
+                            elif line[:12] == "GNU ddrescue":
+                                pass
+                            elif line == "Press Ctrl-C to interrupt":
+                                pass
+                            elif line == "Too many read errors":
+                                pass
+                            elif line == "Too many slow reads":
+                                pass
+                            elif line == "Read error found before the first good read":
+                                pass
+                            else:
+                                print('not:', repr(line))
             else:
                 yield self.values['pct rescued']
 
