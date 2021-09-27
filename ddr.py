@@ -78,7 +78,7 @@ if __name__ == '__main__':
     #passes = [('pass1', ddrescue.output, ('--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'), True), ('pass2', ddrescuelog.run_no_output, ('--done-status',), False), ('pass1', ddrescue.output, ('--sparse', '--no-trim'), True)]
     passes = [
         ('pass1', ddrescue.output, ('--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'), True),
-        ('pass2', ddrescuelog.run_no_output, ('-d',), False),
+        ('pass2', ddrescuelog.run_no_output, ('-D',), False),
         ('pass3', ddrescue.output, ('--sparse', '--verify-on-error', '--no-trim'), True),
         ('pass4', ddrescue.output, ('--sparse', '--verify-on-error', '--no-scrape'), True),
         ('pass5', ddrescue.output, ('--sparse', '--verify-on-error', '--idirect', '--retry-passes=5'), True)
