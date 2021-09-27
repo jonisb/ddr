@@ -99,7 +99,7 @@ if __name__ == '__main__':
     with Live(progress_table, refresh_per_second=10):
         for Pass, func, settings, output in passes:
             for i, (path, size) in enumerate(fileslist.copy()):
-                progress.log(f"Starting job #{path}")
+                #progress.log(f"Starting job #{path}")
                 #sleep(0.2)
                 progress.reset(jobs_task, total=size, description=f"job [bold yellow]#{i+1}")
                 progress.start_task(jobs_task)
@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
                 progress.advance(master_task_size, size)
                 progress2.advance(master_task_files, 1)
-                progress.log(f"Job #{path} is complete")
+                #progress.log(f"Job #{path} is complete")
             progress.reset(master_task_size, total=filessize, description="overall size")
             progress2.reset(master_task_files, total=len(fileslist), description="overall files")
             progress2.advance(master_task_passes, 1)
