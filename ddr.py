@@ -100,13 +100,13 @@ if __name__ == '__main__':
         for Pass, func, settings, output in passes:
             for i, (path, size) in enumerate(fileslist.copy()):
                 progress.log(f"Starting job #{path}")
-                sleep(0.2)
+                #sleep(0.2)
                 progress.reset(jobs_task, total=size, description=f"job [bold yellow]#{i+1}")
                 progress.start_task(jobs_task)
                 Path3 = (Path2 / path.relative_to(Path1))
                 if output:
                     for data in func(path, Path3, settings):
-                        sleep(0.2)
+                        #sleep(0.2)
                         expand_size = eval(ddrescue.values['rescued'].replace('MB', f'* {kB} ** 2').replace('kB', f'* {kB}').replace('B', ''))
                         progress.update(jobs_task, completed=expand_size, refresh=True)
                 else:
