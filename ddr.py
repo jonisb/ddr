@@ -32,7 +32,12 @@ class TimeRemainingColumn2(ProgressColumn):
             return Text("-:--:--", style="progress.remaining")
         return Text(str(remaining_delta), style="progress.remaining")
 
-
+"""
+Scan source files
+Check is destination has .log files
+If no .log files run pass 1
+else skip pass 1
+"""
 if __name__ == '__main__':
     kB = 1024
     Path1 = Path(sys.argv[1])
@@ -77,13 +82,13 @@ if __name__ == '__main__':
     #passes = [['--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'], ['--sparse', '--no-trim']]
     #passes = [('pass1', ddrescue.output, ('--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'), True), ('pass2', ddrescuelog.run_no_output, ('--done-status',), False), ('pass1', ddrescue.output, ('--sparse', '--no-trim'), True)]
     passes = [
-        ('pass1', ddrescuelog.run_no_output, ('-D',), False),
-        ('pass2', ddrescue.output, ('--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'), True),
-        ('pass3', ddrescuelog.run_no_output, ('-D',), False),
+        #('pass1', ddrescuelog.run_no_output, ('--delete-if-done',), False),
+        #('pass2', ddrescue.output, ('--sparse', '--no-trim', '--max-read-errors=0', '--min-read-rate=1Mi', '--max-slow-reads=1'), True),
+        #('pass3', ddrescuelog.run_no_output, ('--delete-if-done',), False),
         ('pass4', ddrescue.output, ('--sparse', '--verify-on-error', '--no-trim'), True),
-        ('pass5', ddrescuelog.run_no_output, ('-D',), False),
+        #('pass5', ddrescuelog.run_no_output, ('--delete-if-done',), False),
         ('pass6', ddrescue.output, ('--sparse', '--verify-on-error', '--no-scrape'), True),
-        ('pass7', ddrescuelog.run_no_output, ('-D',), False),
+        #('pass7', ddrescuelog.run_no_output, ('--delete-if-done',), False),
         ('pass8', ddrescue.output, ('--sparse', '--verify-on-error', '--idirect', '--retry-passes=5'), True)
         ]
     master_task_passes = progress2.add_task("overall passes", total=len(passes))
@@ -104,14 +109,19 @@ if __name__ == '__main__':
                 progress.reset(jobs_task, total=size, description=f"job [bold yellow]#{i+1}")
                 progress.start_task(jobs_task)
                 Path3 = (Path2 / path.relative_to(Path1))
-                if output:
-                    for data in func(path, Path3, settings):
-                        #sleep(0.2)
-                        expand_size = eval(ddrescue.values['rescued'].replace('MB', f'* {kB} ** 2').replace('kB', f'* {kB}').replace('B', ''))
-                        progress.update(jobs_task, completed=expand_size, refresh=True)
-                else:
-                    if not func(Path3, settings):
+                Pathlog = Path3.with_suffix(Path3.suffix + '.log')
+                if Pathlog.exists():
+                    if not ddrescuelog.run_no_output(Path3, ('--delete-if-done',)):
                         fileslist.remove((path, size))
+
+                    elif output:
+                        for data in func(path, Path3, settings):
+                            #sleep(0.2)
+                            expand_size = eval(ddrescue.values['rescued'].replace('MB', f'* {kB} ** 2').replace('kB', f'* {kB}').replace('B', ''))
+                            progress.update(jobs_task, completed=expand_size, refresh=True)
+                    else:
+                        if not func(Path3, settings):
+                            fileslist.remove((path, size))
 
                 progress.advance(master_task_size, size)
                 progress2.advance(master_task_files, 1)
