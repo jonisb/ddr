@@ -113,6 +113,7 @@ if __name__ == '__main__':
                 if Pathlog.exists():
                     if not ddrescuelog.run_no_output(Path3, ('--delete-if-done',)):
                         fileslist.remove((path, size))
+                        filessize -= size
 
                     elif output:
                         for data in func(path, Path3, settings):
