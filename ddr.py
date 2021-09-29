@@ -123,6 +123,9 @@ if __name__ == '__main__':
                     else:
                         if not func(Path3, settings):
                             fileslist.remove((path, size))
+                else:
+                    fileslist.remove((path, size))
+                    filessize -= size
 
                 progress.advance(master_task_size, size)
                 progress2.advance(master_task_files, 1)
