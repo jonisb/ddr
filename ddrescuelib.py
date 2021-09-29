@@ -83,8 +83,8 @@ class ddrescue_class:
                                     pass
                                 elif line == "Read error found before the first good read":
                                     pass
-                                else:
-                                    print('not:', repr(line))
+                                #else:
+                                #    print('not:', repr(line))
             else:
                 yield self.values['pct rescued']
 
